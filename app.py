@@ -11,7 +11,8 @@ import uuid
 from flask_mail import Mail, Message
 # ---------------- BASIC SETUP ----------------
 basedir = os.path.abspath(os.path.dirname(__file__))
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.secret_key = "fpyy wqft htkl qper"
 # ---------------- MAIL CONFIG ----------------
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
