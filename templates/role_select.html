@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EduPermit</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Segoe UI, Arial;
+
+    background:url("/static/bg.jpg");
+    background-size:cover;
+    background-position:center;
+}
+
+/* GLASS CARD */
+.card{
+    backdrop-filter: blur(16px);
+    background: rgba(0,0,0,0.35);
+    padding:60px;
+    border-radius:22px;
+    width:420px;
+    text-align:center;
+    box-shadow:0 25px 60px rgba(0,0,0,0.6);
+    color:white;
+}
+
+h1{
+    margin-bottom:35px;
+    font-size:28px;
+}
+
+/* BUTTON STYLE */
+.role-btn{
+    width:100%;
+    padding:14px;
+    margin:12px 0;
+    border:none;
+    border-radius:30px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.25s;
+    font-weight:600;
+}
+
+.student{ background:white; color:black; }
+.hod{ background:#1abc9c; color:white; }
+.director{ background:#e67e22; color:white; }
+
+.role-btn:hover{
+    transform:scale(1.06);
+}
+
+a{ text-decoration:none; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>Welcome to EduPermit</h1>
+
+    <a href="/student_portal">
+        <button class="role-btn student">Student</button>
+    </a>
+
+    <a href="/hod_login">
+        <button class="role-btn hod">HOD</button>
+    </a>
+
+    <a href="/director_login">
+        <button class="role-btn director">Director</button>
+    </a>
+
+</div>
+
+</body>
+</html>

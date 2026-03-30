@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CEER Approval History</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:url("/static/bg.jpeg") no-repeat center center/cover;
+color:white;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:-1;
+}
+
+.container{
+width:95%;
+margin:100px auto;
+}
+
+.card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(10px);
+padding:25px;
+border-radius:15px;
+margin-bottom:30px;
+}
+
+.member-table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+.member-table th{
+background:#1f618d;
+padding:10px;
+}
+
+.member-table td{
+padding:8px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+text-align:center;
+}
+
+.back-btn{
+position:absolute;
+top:20px;
+left:30px;
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:#3498db;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+{% include "_navbar.html" %}
+
+<a href="{{ url_for('ceer_dashboard') }}">
+<button class="back-btn">← Back to Dashboard</button>
+</a>
+
+<div class="container">
+
+<h2>CEER Approval History (Team Records)</h2>
+
+{% for team in teams %}
+
+<div class="card">
+
+<b>Event:</b> {{ team.event }} <br>
+<b>Team Leader:</b> {{ team.leader }} <br>
+
+<!-- ✅ ADDED PHONE NUMBER -->
+<b>Phone:</b> 
+<a href="tel:{{ team.phone }}" style="color:#00ffcc;">
+    {{ team.phone }}
+</a><br>
+
+<b>Event Date:</b> {{ team.date }} <br>
+<b>Team Size:</b> {{ team.size }} <br>
+<b>CEER Initial Decision:</b> {{ team.ceer_initial }} <br>
+<b>CEER Final Decision:</b> {{ team.ceer_final }} <br>
+
+<h4>Team Members</h4>
+
+<table class="member-table">
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+<th>Year</th>
+<th>Section</th>
+</tr>
+
+{% for m in team.members %}
+
+<tr>
+<td>{{ m.student_name }}</td>
+<td>{{ m.roll_no }}</td>
+<td>{{ m.department }}</td>
+<td>{{ m.year }}</td>
+<td>{{ m.section }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Permission History</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+}
+
+/* overlay */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.65);
+    z-index:-1;
+}
+
+/* container */
+.wrapper{
+    width:95%;
+    max-width:1100px;
+    margin:60px auto;
+}
+
+/* glass card */
+.card{
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px);
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 20px 45px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.25);
+    color:white;
+}
+
+/* header */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.back{
+    text-decoration:none;
+    padding:10px 18px;
+    background:white;
+    color:black;
+    border-radius:20px;
+    font-weight:bold;
+}
+
+/* table */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:rgba(255,255,255,0.18);
+    padding:14px;
+    color:white;
+}
+
+td{
+    padding:14px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+tr:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+/* status colors */
+.badge{
+    padding:6px 14px;
+    border-radius:20px;
+    font-weight:bold;
+    color:white;
+    font-size:13px;
+}
+
+.pending{ background:#f1c40f; }
+.approved{ background:#2ecc71; }
+.rejected{ background:#e74c3c; }
+
+.empty{
+    text-align:center;
+    padding:30px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+{% include "_navbar.html" %}
+
+<div class="wrapper">
+<div class="card">
+
+<div class="header">
+    <h2>Permission History</h2>
+    <a href="/student_dashboard" class="back">← Dashboard</a>
+</div>
+
+{% if teams|length == 0 %}
+<div class="empty">No Requests Found</div>
+{% else %}
+
+<table>
+<tr>
+    <th>Event</th>
+    <th>Team Size</th>
+    <th>From</th>
+    <th>To</th>
+    <th>Status</th>
+</tr>
+
+{% for t in teams %}
+
+{% if t.hod=='Rejected' or t.ceer=='Rejected' or t.director=='Rejected' %}
+    {% set final="Rejected" %}
+    {% set cls="rejected" %}
+{% elif t.hod=='Approved' and t.ceer=='Approved' and t.director=='Approved' %}
+    {% set final="Approved" %}
+    {% set cls="approved" %}
+{% else %}
+    {% set final="Pending" %}
+    {% set cls="pending" %}
+{% endif %}
+
+<tr>
+    <td>{{ t.event }}</td>
+    <td>{{ t.size }}</td>
+    <td>{{ t.from }}</td>
+    <td>{{ t.to }}</td>
+    <td><span class="badge {{cls}}">{{ final }}</span></td>
+</tr>
+
+{% endfor %}
+</table>
+
+{% endif %}
+</div>
+</div>
+
+</body>
+</html>

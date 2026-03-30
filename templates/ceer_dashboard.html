@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CEER HOD Dashboard</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* Dark overlay */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.75);
+    z-index:-1;
+}
+
+/* CENTER CONTAINER */
+.container{
+    text-align:center;
+    color:white;
+}
+
+.container h1{
+    font-size:32px;
+    margin-bottom:40px;
+}
+
+/* BUTTONS */
+.portal-btn{
+    width:220px;
+    padding:15px;
+    margin:15px auto;
+    display:block;
+    border:none;
+    border-radius:30px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    background:rgba(173, 216, 230, 0.8);
+    transition:0.3s;
+}
+
+.portal-btn:hover{
+    background:#5dade2;
+    transform:scale(1.05);
+}
+
+/* PROFILE TOP RIGHT */
+.topbar{
+    position:absolute;
+    top:20px;
+    right:30px;
+}
+
+.profile-img{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    cursor:pointer;
+    border:3px solid white;
+    object-fit:cover;
+}
+
+.profile-card{
+    position:absolute;
+    top:70px;
+    right:0;
+    width:250px;
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    display:none;
+    color:#2c3e50;
+    text-align:center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.5);
+}
+
+.logout-btn{
+    margin-top:15px;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#e74c3c;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.logout-btn:hover{
+    background:#c0392b;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PROFILE -->
+<div class="topbar">
+    <img src="/static/profile.jpeg" class="profile-img" onclick="toggleProfile()">
+
+    <div class="profile-card" id="profileCard">
+        <h3>CEER HOD</h3>
+        <p>{{ session['ceer_email'] }}</p>
+
+        <form action="{{ url_for('logout') }}" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+</div>
+
+<!-- MAIN CENTER -->
+<div class="container">
+
+    <h1>CEER HOD Portal</h1>
+
+    <a href="{{ url_for('ceer_approval') }}">
+        <button class="portal-btn">Approval</button>
+    </a>
+
+    <a href="{{ url_for('ceer_status') }}">
+        <button class="portal-btn">Status</button>
+    </a>
+
+    <a href="{{ url_for('ceer_history') }}">
+        <button class="portal-btn">History</button>
+    </a>
+
+</div>
+
+<script>
+function toggleProfile(){
+    const card = document.getElementById("profileCard");
+    card.style.display = (card.style.display === "block") ? "none" : "block";
+}
+
+window.addEventListener("click", function(e){
+    const img = document.querySelector(".profile-img");
+    const card = document.getElementById("profileCard");
+
+    if(card && img && !card.contains(e.target) && !img.contains(e.target)){
+        card.style.display="none";
+    }
+});
+</script>
+
+</body>
+</html>

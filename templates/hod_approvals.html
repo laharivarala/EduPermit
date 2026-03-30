@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Department HOD Approvals</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:url("/static/bg.jpeg") no-repeat center center/cover;
+color:white;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+z-index:-1;
+}
+
+.container{
+width:90%;
+margin:80px auto;
+}
+
+.back-btn{
+background:#3498db;
+color:white;
+border:none;
+padding:8px 16px;
+border-radius:8px;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:rgba(255,255,255,0.08);
+margin-bottom:30px;
+}
+
+th{
+background:#1f618d;
+padding:12px;
+}
+
+td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.approve{
+background:#27ae60;
+color:white;
+border:none;
+padding:6px 14px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.reject{
+background:#e74c3c;
+color:white;
+border:none;
+padding:6px 14px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.view{
+color:#ccc;
+font-style:italic;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Department HOD Approvals</h2>
+
+<a href="/hod_dashboard">
+<button class="back-btn">← Back to Dashboard</button>
+</a>
+
+{% if teams|length == 0 %}
+<p>No requests available.</p>
+{% endif %}
+
+{% for team in teams %}
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+<th>Section</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for m in team %}
+
+<tr>
+
+<td>{{ m.student_name }}</td>
+<td>{{ m.roll_no }}</td>
+<td>{{ m.department }}</td>
+<td>{{ m.section }}</td>
+<td>{{ m.hod_status }}</td>
+
+<td>
+
+{% if m.hod_status == "Pending" %}
+
+    <!-- CSE1 HOD -->
+    {% if hod_dept == "CSE1" and m.department == "CSE" and m.section in ["C","D","E","F"] %}
+
+        <a href="{{ url_for('hod_approve', id=m.id) }}">
+            <button class="approve">Approve</button>
+        </a>
+
+        <a href="{{ url_for('hod_reject', id=m.id) }}">
+            <button class="reject">Reject</button>
+        </a>
+
+    <!-- CSE2 HOD -->
+    {% elif hod_dept == "CSE2" and m.department == "CSE" and m.section in ["A","B","G"] %}
+
+        <a href="{{ url_for('hod_approve', id=m.id) }}">
+            <button class="approve">Approve</button>
+        </a>
+
+        <a href="{{ url_for('hod_reject', id=m.id) }}">
+            <button class="reject">Reject</button>
+        </a>
+
+    <!-- Other Departments -->
+    {% elif m.department == hod_dept %}
+
+        <a href="{{ url_for('hod_approve', id=m.id) }}">
+            <button class="approve">Approve</button>
+        </a>
+
+        <a href="{{ url_for('hod_reject', id=m.id) }}">
+            <button class="reject">Reject</button>
+        </a>
+
+    {% else %}
+
+        <span class="view">View Only</span>
+
+    {% endif %}
+
+{% else %}
+
+{{ m.hod_status }}
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EduPermit</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+    color:white;
+}
+
+/* TITLE */
+h1{
+    margin-bottom:40px;
+    text-shadow:0 0 15px rgba(0,0,0,0.7);
+}
+
+/* GRID CONTAINER */
+.roles{
+    display:grid;
+    grid-template-columns: repeat(2, 180px);
+    gap:25px;
+}
+
+/* BUTTON STYLE */
+.rolebtn{
+    padding:18px 0;
+    border-radius:25px;
+    border:none;
+    background:white;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 0 12px rgba(0,0,0,0.5);
+    transition:0.25s;
+    font-size:16px;
+    width:180px;
+}
+
+.rolebtn:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 18px rgba(0,0,0,0.7);
+}
+
+a{text-decoration:none;}
+</style>
+</head>
+
+<body>
+
+<h1>Welcome to EduPermit</h1>
+
+<div class="roles">
+    <a href="/student_portal"><button class="rolebtn">Student</button></a>
+    <a href="/faculty_login"><button class="rolebtn">Faculty</button></a>
+    <a href="/hod_login"><button class="rolebtn">HOD</button></a>
+    <a href="/director_login"><button class="rolebtn">Director</button></a>
+</div>
+
+</body>
+</html>

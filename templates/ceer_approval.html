@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>CEER Institutional Review Panel</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:url("/static/bg.jpeg") no-repeat center center/cover;
+color:white;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:-1;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+position:fixed;
+top:25px;
+left:30px;
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:#3498db;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* CONTAINER */
+
+.container{
+width:95%;
+margin:100px auto;
+}
+
+/* SECTIONS */
+
+.section{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+padding:25px;
+border-radius:15px;
+margin-bottom:40px;
+}
+
+h2{
+margin-bottom:20px;
+}
+
+/* CARD */
+
+.card{
+background:rgba(255,255,255,0.05);
+padding:20px;
+margin-bottom:25px;
+border-radius:10px;
+}
+
+/* TABLE */
+
+.member-table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+.member-table th{
+background:#1f618d;
+padding:8px;
+}
+
+.member-table td{
+padding:8px;
+border-bottom:1px solid rgba(255,255,255,0.2);
+text-align:center;
+}
+
+/* BUTTONS */
+
+.btn{
+padding:8px 18px;
+border:none;
+border-radius:20px;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+margin-right:10px;
+}
+
+.approve{
+background:#27ae60;
+color:white;
+}
+
+.reject{
+background:#c0392b;
+color:white;
+}
+
+.pending{
+color:#f1c40f;
+font-weight:bold;
+}
+
+.approved{
+color:#2ecc71;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<a href="{{ url_for('ceer_dashboard') }}">
+<button class="back-btn">← Back to Dashboard</button>
+</a>
+
+<div class="container">
+
+
+<!-- ================= INITIAL CEER REVIEW ================= -->
+
+<div class="section">
+
+<h2>Initial CEER Institutional Review</h2>
+
+{% for team in initial_review %}
+
+<div class="card">
+
+<b>Event Name:</b> {{ team[0].event_name }} <br>
+<b>Event Type:</b> {{ team[0].event_type }} <br>
+<b>Organization:</b> {{ team[0].organization }} <br>
+<b>Location:</b> {{ team[0].place }} <br>
+<b>Project Title:</b> {{ team[0].project_title or "Not Provided" }} <br>
+<b>Event Dates:</b> {{ team[0].from_date }} to {{ team[0].to_date }} <br>
+<b>Faculty Guide:</b> {{ team[0].faculty_name }} <br>
+<b>Faculty Contact:</b> {{ team[0].contact_number }} <br>
+<b>Team Leader:</b> {{ team[0].team_leader }} <br>
+
+<h4>Team Members</h4>
+
+<table class="member-table">
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+<th>Year</th>
+<th>Section</th>
+</tr>
+
+{% for m in team %}
+
+<tr>
+<td>{{ m.student_name }}</td>
+<td>{{ m.roll_no }}</td>
+<td>{{ m.department }}</td>
+<td>{{ m.year }}</td>
+<td>{{ m.section }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<a href="{{ url_for('ceer_initial_approve', team_id=team[0].team_id) }}">
+<button class="btn approve">Approve Entire Team</button>
+</a>
+
+<a href="{{ url_for('ceer_initial_reject', team_id=team[0].team_id) }}">
+<button class="btn reject">Reject Entire Team</button>
+</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+
+<!-- ================= FINAL CEER REVIEW ================= -->
+
+<div class="section">
+
+<h2>Final CEER Institutional Review (After Department HOD Approval)</h2>
+
+{% for team in final_review %}
+
+<div class="card">
+
+<b>Event Name:</b> {{ team[0].event_name }} <br>
+<b>Event Type:</b> {{ team[0].event_type }} <br>
+<b>Organization:</b> {{ team[0].organization }} <br>
+<b>Location:</b> {{ team[0].place }} <br>
+<b>Project Title:</b> {{ team[0].project_title or "Not Provided" }} <br>
+<b>Event Dates:</b> {{ team[0].from_date }} to {{ team[0].to_date }} <br>
+<b>Faculty Guide:</b> {{ team[0].faculty_name }} <br>
+<b>Faculty Contact:</b> {{ team[0].contact_number }} <br>
+<b>Team Leader:</b> {{ team[0].team_leader }} <br>
+
+<h4>Team Members + Department HOD Status</h4>
+
+<table class="member-table">
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+<th>Year</th>
+<th>Section</th>
+<th>HOD Status</th>
+</tr>
+
+{% for m in team %}
+
+<tr>
+
+<td>{{ m.student_name }}</td>
+<td>{{ m.roll_no }}</td>
+<td>{{ m.department }}</td>
+<td>{{ m.year }}</td>
+<td>{{ m.section }}</td>
+
+<td>
+
+{% if m.hod_status == "Approved" %}
+<span class="approved">Approved</span>
+{% else %}
+<span class="pending">{{ m.hod_status }}</span>
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<a href="{{ url_for('ceer_final_approve', team_id=team[0].team_id) }}">
+<button class="btn approve">Approve Entire Team</button>
+</a>
+
+<a href="{{ url_for('ceer_final_reject', team_id=team[0].team_id) }}">
+<button class="btn reject">Reject Entire Team</button>
+</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</body>
+
+</html>

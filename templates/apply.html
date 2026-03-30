@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Apply Permission</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+}
+
+/* wrapper centers only card */
+.wrapper{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding-top:80px;   /* space for profile */
+}
+
+/* GLASS CARD */
+.card{
+    width:450px;
+    padding:45px;
+    border-radius:25px;
+    backdrop-filter:blur(15px);
+    background:rgba(255,255,255,0.15);
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+    text-align:center;
+    color:white;
+}
+
+h2{
+    margin-bottom:40px;
+    font-size:26px;
+}
+
+/* BUTTONS */
+.option-btn{
+    width:100%;
+    padding:20px;
+    margin:20px 0;
+    border:none;
+    border-radius:20px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.individual{
+    background:linear-gradient(45deg,#2e86de,#1b4f72);
+    color:white;
+}
+
+.team{
+    background:linear-gradient(45deg,#8e44ad,#5b2c6f);
+    color:white;
+}
+
+.option-btn:hover{
+    transform:translateY(-4px) scale(1.03);
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+.back{
+    display:inline-block;
+    margin-top:25px;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PROFILE DROPDOWN -->
+{% include "_navbar.html" with context %}
+
+<div class="wrapper">
+    <div class="card">
+
+        <h2>Choose Permission Type</h2>
+
+        <a href="/apply_individual">
+            <button class="option-btn individual">
+                Individual Permission
+            </button>
+        </a>
+
+        <a href="/apply_team">
+            <button class="option-btn team">
+                Team Permission
+            </button>
+        </a>
+
+        <br>
+        <a href="/student_dashboard" class="back">← Back to Dashboard</a>
+
+    </div>
+</div>
+
+</body>
+</html>

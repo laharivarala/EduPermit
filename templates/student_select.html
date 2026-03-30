@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Portal</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.glass{
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 20px;
+    padding: 50px;
+    width: 360px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    color: white;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    margin:12px 0;
+    border-radius:25px;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.login{ background:white;color:black;}
+.register{ background:white;color:black;}
+
+a{text-decoration:none;}
+</style>
+</head>
+
+<body>
+
+<div class="glass">
+<h1>Student</h1>
+
+<a href="/login"><button class="login">Login</button></a>
+<a href="/register"><button class="register">Register</button></a>
+
+</div>
+
+</body>
+</html>

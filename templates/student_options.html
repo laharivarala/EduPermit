@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student</title>
+<style>
+body{
+    margin:0;
+    height:100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.glass{
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 20px;
+    padding: 45px;
+    width: 360px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    color:white;
+}
+
+button{
+    margin:10px;
+    padding:12px 28px;
+    border-radius:25px;
+    border:none;
+    background:white;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="glass">
+    <h2>Student</h2>
+
+    <a href="/register"><button>Register</button></a>
+    <a href="/login"><button>Login</button></a>
+</div>
+
+</body>
+</html>

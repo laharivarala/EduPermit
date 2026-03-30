@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HOD Login</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* GLASS CARD */
+.glass{
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 20px;
+    padding: 45px;
+    width: 360px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    color: white;
+}
+
+h1{
+    margin-bottom:25px;
+}
+
+/* INPUTS */
+input{
+    width:100%;
+    padding:12px;
+    margin:12px 0;
+    border-radius:25px;
+    border:none;
+    outline:none;
+    font-size:15px;
+}
+
+/* LOGIN BUTTON */
+.loginbtn{
+    margin-top:15px;
+    padding:12px 28px;
+    border-radius:25px;
+    border:none;
+    background:white;
+    cursor:pointer;
+    font-weight:bold;
+    width:100%;
+}
+
+/* BACK BUTTON */
+.backbtn{
+    margin-top:15px;
+    padding:12px;
+    width:100%;
+    border-radius:25px;
+    border:none;
+    background:white;
+    cursor:pointer;
+}
+
+/* FORGOT LINK */
+.forgot{
+    display:block;
+    margin-top:18px;
+    color:#ddd;
+    font-size:14px;
+    text-decoration:none;
+}
+
+.forgot:hover{
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- FLASH MESSAGE -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        <div style="
+            position:fixed;
+            top:20px;
+            left:50%;
+            transform:translateX(-50%);
+            padding:15px 25px;
+            border-radius:10px;
+            color:white;
+            font-weight:bold;
+            z-index:9999;
+
+            {% if category == 'success' %}
+                background-color:#2ecc71;
+            {% else %}
+                background-color:#e74c3c;
+            {% endif %}
+        ">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="glass">
+    <h1>HOD Login</h1>
+
+    <form method="POST" action="{{ url_for('hod_login') }}">
+        <input type="email"
+               name="email"
+               placeholder="Enter HOD Email"
+               required>
+
+        <input type="password"
+               name="password"
+               placeholder="Enter Password"
+               required>
+
+        <button class="loginbtn" type="submit">Login</button>
+    </form>
+
+    <!-- Forgot Password -->
+    <a class="forgot" href="{{ url_for('hod_forgot') }}">
+        Forgot Password?
+    </a>
+
+    <!-- Back -->
+    <a href="{{ url_for('home') }}">
+        <button class="backbtn">← Back</button>
+    </a>
+</div>
+
+</body>
+</html>

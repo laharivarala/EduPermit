@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Team Event Request</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial;
+    background:url("/static/bg.jpeg") no-repeat center center/cover;
+}
+
+/* CARD */
+.container{
+    width:85%;
+    margin:40px auto;
+    background:rgba(0,0,0,0.7);
+    padding:30px;
+    border-radius:15px;
+    color:white;
+}
+
+h2{text-align:center;margin-bottom:25px;letter-spacing:1px;}
+
+.error-box{
+    background:#e74c3c;
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:15px;
+    display:none;
+    font-weight:bold;
+}
+
+input, select{
+    padding:8px;
+    margin:6px 0;
+    width:100%;
+    border-radius:6px;
+    border:none;
+}
+
+.small-input{ width:95%; padding:5px; }
+
+table{ width:100%; margin-top:15px; border-collapse:collapse; }
+th, td{ padding:6px; text-align:center; }
+th{ background:#5b9bd5; }
+
+.submit-btn{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#2ecc71;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* SUCCESS MODAL */
+.success-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.65);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-box{
+    background:white;
+    padding:40px 60px;
+    border-radius:15px;
+    text-align:center;
+    color:#2c3e50;
+    animation:popUp .35s ease;
+}
+
+.modal-box h1{
+    color:#27ae60;
+}
+
+.ok-btn{
+    margin-top:20px;
+    padding:10px 30px;
+    border:none;
+    border-radius:8px;
+    background:#27ae60;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+@keyframes popUp{
+    from{ transform:scale(0.5); opacity:0;}
+    to{ transform:scale(1); opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+{% include "_navbar.html" %}
+
+<!-- BACK BUTTON ADDED -->
+<div style="width:85%;margin:20px auto;">
+    <a href="/student_dashboard">
+        <button style="
+            padding:10px 20px;
+            border:none;
+            border-radius:8px;
+            background:#3498db;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;">
+            ← Back to Dashboard
+        </button>
+    </a>
+</div>
+
+<!-- SUCCESS POPUP -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        {% if category == 'success' %}
+        <div class="success-modal" id="successModal">
+            <div class="modal-box">
+                <h1>✔ Successfully Submitted</h1>
+                <p>{{ message }}</p>
+                <button class="ok-btn" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container">
+<h2>Student Team Event Request</h2>
+
+<div class="error-box" id="errorBox"></div>
+
+<form method="POST" onsubmit="return validateForm()">
+
+<label>Event Name</label>
+<input type="text" name="event_name" required>
+
+<label>Event Type</label>
+<select name="event_type" required>
+    <option value="">Select Event Type</option>
+    <option>Hackathon</option>
+    <option>Project Competition</option>
+    <option>Project Expo</option>
+</select>
+
+<label>Conducted By</label>
+<input type="text" name="organization" required>
+
+<label>Place</label>
+<input type="text" name="place" required>
+
+<label>Project Title (Optional)</label>
+<input type="text" name="project_title">
+
+<label>From Date</label>
+<input type="date" id="from_date" name="from_date" required>
+
+<label>To Date</label>
+<input type="date" id="to_date" name="to_date" required>
+
+<label>Faculty Guide Name</label>
+<input type="text" name="faculty_name" required>
+
+<hr>
+
+<h3>Team Members</h3>
+
+<label>Team Leader Name</label>
+<input type="text" id="tl_name" name="tl_name" required>
+
+<label>Contact Number</label>
+<input type="text" id="contact" name="contact_number" required>
+
+<label>Number of Team Members</label>
+<input type="number" id="teamSize" name="teamSize" min="1" max="10" required>
+
+<table border="1">
+<thead>
+<tr>
+<th>S.No</th>
+<th>Name</th>
+<th>Roll No</th>
+<th>Year</th>
+<th>Branch</th>
+<th>Section</th>
+</tr>
+</thead>
+<tbody id="teamTableBody"></tbody>
+</table>
+
+<button type="submit" class="submit-btn">Submit Request</button>
+</form>
+</div>
+
+<script>
+
+/* SECTION COUNT */
+const sectionMap = {
+    "CSE":7,
+    "CSM":6,
+    "ECE":4,
+    "CSD":3,
+    "CSC":2,
+    "MECH":1,
+    "CIVIL":1,
+    "EEE":1
+};
+
+/* DISABLE PAST + TODAY */
+window.onload = function(){
+    let today = new Date();
+    today.setDate(today.getDate()+1);
+    let min = today.toISOString().split('T')[0];
+    document.getElementById("from_date").min = min;
+    document.getElementById("to_date").min = min;
+};
+
+/* DYNAMIC TABLE */
+document.getElementById("teamSize").addEventListener("input", function(){
+
+    let size=parseInt(this.value);
+    let tbody=document.getElementById("teamTableBody");
+    tbody.innerHTML="";
+    if(!size) return;
+
+    for(let i=1;i<=size;i++){
+        tbody.innerHTML+=`
+        <tr>
+        <td>${i}</td>
+        <td><input class="small-input member-name" name="name${i}" required></td>
+        <td><input class="small-input" name="email${i}" required></td>
+        <td>
+        <select class="small-input" name="year${i}" required>
+        <option value="">Select</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option>
+        </select></td>
+        <td>
+        <select class="small-input" name="dept${i}" onchange="loadSections(this,${i})" required>
+        <option value="">Select</option>
+        <option>CIVIL</option>
+        <option>CSD</option>
+        <option>CSE</option>
+        <option>CSC</option>
+        <option>CSM</option>
+        <option>ECE</option>
+        <option>EEE</option>
+        <option>MECH</option>
+        </select></td>
+        <td>
+        <select class="small-input" id="section${i}" name="section${i}" required>
+        <option value="">Select</option>
+        </select></td>
+        </tr>`;
+    }
+});
+
+/* LOAD SECTIONS */
+function loadSections(branchSelect,row){
+    let branch=branchSelect.value;
+    let sectionDrop=document.getElementById("section"+row);
+    sectionDrop.innerHTML='<option value="">Select</option>';
+    let count=sectionMap[branch];
+    if(!count) return;
+    for(let i=1;i<=count;i++){
+        sectionDrop.innerHTML+=`<option>${String.fromCharCode(64+i)}</option>`;
+    }
+}
+
+/* VALIDATION */
+function validateForm(){
+
+    let phone=document.getElementById("contact").value;
+    if(!/^\d{10}$/.test(phone)) return showError("Contact must be 10 digits");
+
+    let from=document.getElementById("from_date").value;
+    let to=document.getElementById("to_date").value;
+    if(to<from) return showError("To Date must be same or after From Date");
+
+    let tl=document.getElementById("tl_name").value.toLowerCase();
+    let members=document.querySelectorAll(".member-name");
+    let match=false;
+    members.forEach(m=>{ if(m.value.toLowerCase()==tl) match=true; });
+    if(!match) return showError("Team leader must be one of the members");
+
+    return true;
+}
+
+function showError(msg){
+    let box=document.getElementById("errorBox");
+    box.innerHTML=msg;
+    box.style.display="block";
+    window.scrollTo({top:0,behavior:'smooth'});
+    return false;
+}
+
+function closeModal(){
+    document.getElementById("successModal").style.display="none";
+}
+
+</script>
+
+</body>
+</html>

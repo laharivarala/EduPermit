@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Students</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:url("/static/bg.jpeg") no-repeat center center/cover;
+color:white;
+}
+
+.container{
+width:80%;
+margin:120px auto;
+text-align:center;
+}
+
+table{
+width:100%;
+background:rgba(0,0,0,0.6);
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border:1px solid white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+{% include "_navbar.html" %}
+
+<div class="container">
+
+<h2>Year {{year}} - {{dept}} - Section {{section}}</h2>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Hackathon</th>
+<th>From</th>
+<th>To</th>
+</tr>
+
+{% for s in students %}
+
+<tr>
+<td>{{s.student_name}}</td>
+<td>{{s.roll_no}}</td>
+<td>{{s.event_name}}</td>
+<td>{{s.from_date}}</td>
+<td>{{s.to_date}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+{% if 'user_email' in session or 'hod_email' in session or 'ceer_email' in session or 'director_email' in session or 'faculty_email' in session %}
+
+<div class="topbar">
+
+<img src="/static/profile.jpeg" class="profile-img" onclick="toggleProfile()">
+
+<div class="profile-card" id="profileCard">
+
+{% if 'user_email' in session %}
+
+<h3>{{ session['user_email'].split('@')[0].upper() }}</h3>
+<p>{{ session['user_email'] }}</p>
+
+{% elif 'hod_email' in session %}
+
+<h3>{{ session['hod_email'].split('@')[0].upper() }}</h3>
+<p>{{ session['hod_email'] }}</p>
+
+{% elif 'ceer_email' in session %}
+
+<h3>{{ session['ceer_email'].split('@')[0].upper() }}</h3>
+<p>{{ session['ceer_email'] }}</p>
+
+{% elif 'director_email' in session %}
+
+<h3>{{ session['director_email'].split('@')[0].upper() }}</h3>
+<p>{{ session['director_email'] }}</p>
+
+{% elif 'faculty_email' in session %}
+
+<h3>{{ session['faculty_email'].split('@')[0].upper() }}</h3>
+<p>{{ session['faculty_email'] }}</p>
+
+{% endif %}
+
+<form action="{{ url_for('logout') }}" method="post">
+<button type="submit" class="logout-btn">Logout</button>
+</form>
+
+</div>
+</div>
+
+<style>
+
+.topbar{
+position:fixed;
+top:20px;
+right:30px;
+z-index:9999;
+}
+
+.profile-img{
+width:55px;
+height:55px;
+border-radius:50%;
+cursor:pointer;
+border:3px solid white;
+object-fit:cover;
+box-shadow:0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* PROFILE CARD */
+
+.profile-card{
+position:absolute;
+top:70px;
+right:0;
+width:250px;
+background:#a7d3f5;
+border-radius:15px;
+padding:20px;
+display:none;
+color:black;
+box-shadow:0 8px 20px rgba(0,0,0,0.4);
+text-align:center;
+}
+
+.profile-card h3{
+margin:0;
+font-size:20px;
+}
+
+.profile-card p{
+margin-top:5px;
+font-size:14px;
+color:#333;
+word-break:break-all;
+}
+
+/* LOGOUT BUTTON */
+
+.logout-btn{
+margin-top:15px;
+width:100%;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#2c3e50;
+color:white;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.logout-btn:hover{
+background:#1b2836;
+}
+
+</style>
+
+<script>
+
+function toggleProfile(){
+
+const card=document.getElementById("profileCard");
+
+card.style.display=(card.style.display==="block")?"none":"block";
+
+}
+
+window.addEventListener("click",function(e){
+
+const img=document.querySelector(".profile-img");
+const card=document.getElementById("profileCard");
+
+if(card && img && !card.contains(e.target) && !img.contains(e.target)){
+card.style.display="none";
+}
+
+});
+
+</script>
+
+{% endif %}

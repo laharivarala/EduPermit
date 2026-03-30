@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Director Approvals</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:url("/static/bg.jpeg") no-repeat center center/cover;
+color:white;
+}
+
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:-1;
+}
+
+.container{
+width:90%;
+margin:100px auto;
+}
+
+/* BACK BUTTON */
+.back-btn{
+position:fixed;
+top:25px;
+left:30px;
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:#3498db;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.event-card{
+background:rgba(255,255,255,0.08);
+padding:25px;
+border-radius:15px;
+margin-bottom:40px;
+}
+
+.team-box{
+margin-top:25px;
+padding:15px;
+border-radius:10px;
+background:rgba(0,0,0,0.4);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+th{
+background:#1f618d;
+padding:10px;
+}
+
+td{
+padding:8px;
+text-align:center;
+border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+button{
+padding:8px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.approve{
+background:#27ae60;
+color:white;
+}
+
+.reject{
+background:#e74c3c;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+{% include "_navbar.html" %}
+
+<!-- BACK BUTTON -->
+<a href="{{ url_for('director_dashboard') }}">
+<button class="back-btn">← Back to Dashboard</button>
+</a>
+
+<div class="container">
+
+<h2>Director Final Approvals</h2>
+
+{% for event, teams in events.items() %}
+
+<div class="event-card">
+
+<h3>Event: {{ event }}</h3>
+
+{% for team_id, team in teams.items() %}
+
+<div class="team-box">
+
+<b>Team Leader:</b> {{ team.leader }} <br>
+<b>Contact:</b> {{ team.phone }}
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+<th>Year</th>
+<th>Section</th>
+</tr>
+
+{% for m in team.members %}
+
+<tr>
+<td>{{ m.student_name }}</td>
+<td>{{ m.roll_no }}</td>
+<td>{{ m.department }}</td>
+<td>{{ m.year }}</td>
+<td>{{ m.section }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<a href="/director_approve/{{ team_id }}">
+<button class="approve">Approve Team</button>
+</a>
+
+<a href="/director_reject/{{ team_id }}">
+<button class="reject">Reject Team</button>
+</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

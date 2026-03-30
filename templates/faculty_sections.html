@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sections</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:url("/static/bg.jpeg") no-repeat center center/cover;
+color:white;
+}
+
+.container{
+width:80%;
+margin:120px auto;
+text-align:center;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:30px;
+margin-top:40px;
+}
+
+.card{
+background:rgba(255,255,255,0.1);
+padding:30px;
+border-radius:15px;
+font-size:22px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
+}
+
+a{
+text-decoration:none;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+{% include "_navbar.html" %}
+
+<div class="container">
+
+<h2>{{dept}} - Year {{year}} Sections</h2>
+
+<div class="grid">
+
+{% for s in sections %}
+
+<a href="/faculty_students/{{year}}/{{dept}}/{{s}}">
+<div class="card">
+Section {{s}}
+</div>
+</a>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</body>
+</html>
