@@ -248,7 +248,9 @@ def reset_password():
 # ---------------- STUDENT DASHBOARD ----------------
 @app.route('/student_dashboard')
 def student_dashboard():
-    return "Dashboard working"
+    if 'user_email' not in session:
+        return redirect('/login')
+    return render_template("student_dashboard.html",email=session['user_email'])
 # ---------------- COMMON LOGOUT ----------------
 @app.route('/logout', methods=['POST'])
 def logout():
