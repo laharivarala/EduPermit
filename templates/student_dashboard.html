@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>EduPermit Student Portal</title>
+    <title>EduPermit Student Portal</title>
 
-<style>
-body{
-    margin:0;
-    height:100vh;
-    font-family: Arial, Helvetica, sans-serif;
-    background:url("/static/bg.jpeg") no-repeat center center/cover;
-}
+    <style>
+    body{
+        margin:0;
+        height:100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background:url("/static/bg.jpeg") no-repeat center center/cover;
+    }
 
-/* CENTER */
-.centerbox{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    text-align:center;
-    color:white;
-}
+    /* CENTER */
+    .centerbox{
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+        text-align:center;
+        color:white;
+    }
 
-.btn{
-    margin:15px;
-    padding:18px 35px;
-    border-radius:20px;
-    border:none;
-    background:#a7d3f5;
-    font-weight:bold;
-    font-size:16px;
-    cursor:pointer;
-    min-width:220px;
-    transition:0.2s;
-}
+    .btn{
+        margin:15px;
+        padding:18px 35px;
+        border-radius:20px;
+        border:none;
+        background:#a7d3f5;
+        font-weight:bold;
+        font-size:16px;
+        cursor:pointer;
+        min-width:220px;
+        transition:0.2s;
+    }
 
-.btn:hover{
-    background:#5b9bd5;
-    color:white;
-}
-</style>
+    .btn:hover{
+        background:#5b9bd5;
+        color:white;
+    }
+    </style>
 </head>
 
 <body>
 
-<!-- TEMP: navbar removed to avoid crash -->
+<!-- ✅ SAFE NAVBAR (WILL NOT CRASH) -->
+{% include "_navbar.html" ignore missing %}
 
 <div class="centerbox">
     <h1>Student Portal</h1>
