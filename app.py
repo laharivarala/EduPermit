@@ -1232,6 +1232,12 @@ def add_faculty():
             ))
     db.session.commit()
     return "Faculty added successfully"
+with app.app_context():
+    db.create_all()
+    seed_hods()
+    seed_ceer()
+    seed_director()
+    seed_faculty()
 #--------------------MAIN------------
 if __name__ == "__main__":
     with app.app_context():
