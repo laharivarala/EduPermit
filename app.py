@@ -107,6 +107,9 @@ def seed_hods():
 @app.route('/student_portal')
 def student_portal():
     return render_template("student_select.html")
+@app.route('/')
+def home():
+    return render_template("index.html")   # OR login.html
 # ---------------- REGISTER ----------------
 @app.route('/register', methods=['GET','POST'])
 def register():
