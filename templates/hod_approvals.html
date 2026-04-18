@@ -105,7 +105,7 @@ font-style:italic;
 <th>Department</th>
 <th>Section</th>
 <th>Status</th>
-<th>Action</th>
+<th>Action (with Attendance)</th>
 </tr>
 
 {% for m in team %}
@@ -122,38 +122,24 @@ font-style:italic;
 
 {% if m.hod_status == "Pending" %}
 
-    <!-- CSE1 HOD -->
-    {% if hod_dept == "CSE1" and m.department == "CSE" and m.section in ["C","D","E","F"] %}
+    {% if (hod_dept == "CSE1" and m.department == "CSE" and m.section in ["C","D","E","F"])
+       or (hod_dept == "CSE2" and m.department == "CSE" and m.section in ["A","B","G"])
+       or (m.department == hod_dept) %}
 
-        <a href="{{ url_for('hod_approve', id=m.id) }}">
-            <button class="approve">Approve</button>
-        </a>
+        <!-- ✅ ONE FORM FOR BOTH BUTTONS -->
+        <form method="POST">
 
-        <a href="{{ url_for('hod_reject', id=m.id) }}">
-            <button class="reject">Reject</button>
-        </a>
+            <input type="number" name="attendance" placeholder="%" min="0" max="100" required style="width:60px;">
 
-    <!-- CSE2 HOD -->
-    {% elif hod_dept == "CSE2" and m.department == "CSE" and m.section in ["A","B","G"] %}
+            <button formaction="{{ url_for('hod_approve', id=m.id) }}" class="approve">
+                Approve
+            </button>
 
-        <a href="{{ url_for('hod_approve', id=m.id) }}">
-            <button class="approve">Approve</button>
-        </a>
+            <button formaction="{{ url_for('hod_reject', id=m.id) }}" class="reject">
+                Reject
+            </button>
 
-        <a href="{{ url_for('hod_reject', id=m.id) }}">
-            <button class="reject">Reject</button>
-        </a>
-
-    <!-- Other Departments -->
-    {% elif m.department == hod_dept %}
-
-        <a href="{{ url_for('hod_approve', id=m.id) }}">
-            <button class="approve">Approve</button>
-        </a>
-
-        <a href="{{ url_for('hod_reject', id=m.id) }}">
-            <button class="reject">Reject</button>
-        </a>
+        </form>
 
     {% else %}
 
@@ -163,7 +149,7 @@ font-style:italic;
 
 {% else %}
 
-{{ m.hod_status }}
+    {{ m.attendance if m.attendance else "-" }}%
 
 {% endif %}
 

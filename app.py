@@ -13,21 +13,21 @@ from flask_mail import Mail, Message
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.secret_key = "fpyy wqft htkl qper"
+app.secret_key = "fpyywqfthtklqper"
 # ---------------- MAIL CONFIG ----------------
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'laharivarala06@gmail.com'
-app.config['MAIL_PASSWORD'] = 'fpyy wqft htkl qper'
+app.config['MAIL_PASSWORD'] = 'fpyywqfthtklqper'
 app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'uploads')
 # create folder automatically
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 mail = Mail(app)
-
 # ---------------- DATABASE ----------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'students.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads'
 db = SQLAlchemy(app)
 # ---------------- MODELS ----------------
@@ -63,7 +63,7 @@ class Permission(db.Model):
     hod_status = db.Column(db.String(50), default="Pending")
     director_status = db.Column(db.String(50), default="Pending")
     faculty_status = db.Column(db.String(50), default="Pending")
-
+    attendance = db.Column(db.String(10))
     # CURRENT APPROVAL STAGE
     stage = db.Column(db.String(50), default="CEER")
 class HOD(db.Model):
@@ -104,9 +104,6 @@ def seed_hods():
             db.session.add(HOD(email=mail_id, password="cmr123", first_login=True))
     db.session.commit()
 # ---------------- HOME ----------------
-@app.route('/')
-def home():
-    return render_template("index.html")
 @app.route('/student_portal')
 def student_portal():
     return render_template("student_select.html")
@@ -182,7 +179,10 @@ def forgot():
 
             msg.body = f"Your OTP for password reset is: {otp}"
 
-            mail.send(msg)
+            try:
+                mail.send(msg)
+            except Exception as e:
+                print("Mail error:", e)
 
             flash("OTP sent to your email", "success")
 
@@ -680,11 +680,19 @@ def ceer_initial_reject(team_id):
 #-----------------CEER FINAL Approval-------------------
 @app.route('/ceer_final_approve/<team_id>')
 def ceer_final_approve(team_id):
-    records = Permission.query.filter_by(team_id=team_id).all()
+
+    # ✅ only take approved students
+    records = Permission.query.filter_by(
+        team_id=team_id,
+        hod_status="Approved"
+    ).all()
+
     for r in records:
         r.ceer_status = "Approved (Final Review)"
-        r.stage = "DIRECTOR"   # THIS removes it from CEER page
+        r.stage = "DIRECTOR"   # move forward
+
     db.session.commit()
+
     return redirect('/ceer_approval')
 #----------------------CEER FINAL REJECT---------------------------
 @app.route('/ceer_final_reject/<team_id>')
@@ -767,33 +775,75 @@ def hod_approvals():
         hod_dept=hod_dept
     )
 # ---------------- HOD APPROVE ----------------
-@app.route('/hod_approve/<int:id>')
+@app.route('/hod_approve/<int:id>', methods=['POST'])
 def hod_approve(id):
+
     record = Permission.query.get(id)
+
+    # ✅ GET attendance from form
+    attendance = request.form.get('attendance')
+
+    # ✅ SAVE attendance (THIS WAS MISSING)
+    if attendance:
+        record.attendance = attendance
+
+    # ✅ approve ONLY this student
     record.hod_status = "Approved"
+
     db.session.commit()
+
     team_records = Permission.query.filter_by(team_id=record.team_id).all()
-    # check if all department HODs approved
-    all_done = True
+
+    # check if ANY still pending
+    any_pending = False
     for r in team_records:
-        if r.hod_status != "Approved":
-            all_done = False
+        if r.hod_status == "Pending":
+            any_pending = True
             break
-    # if ALL approved → send to CEER FINAL
-    if all_done:
+
+    # if NO pending → move forward
+    if not any_pending:
         for r in team_records:
-            r.stage = "CEER_FINAL"
+            if r.hod_status == "Approved":
+                r.stage = "CEER_FINAL"
+            elif r.hod_status == "Rejected":
+                r.stage = "REJECTED"
+
         db.session.commit()
+
     return redirect('/hod_approvals')
 # ---------------- HOD REJECT ----------------
-@app.route('/hod_reject/<int:id>')
+@app.route('/hod_reject/<int:id>', methods=['POST'])
 def hod_reject(id):
+
     record = Permission.query.get(id)
-    team_records = Permission.query.filter_by(team_id=record.team_id).all()
-    for r in team_records:
-        r.hod_status = "Rejected"
-        r.stage = "REJECTED"
+
+    # ✅ get attendance ALSO for rejected
+    attendance = request.form.get('attendance')
+
+    if attendance:
+        record.attendance = attendance
+
+    record.hod_status = "Rejected"
+    record.stage = "REJECTED"
+
     db.session.commit()
+
+    team_records = Permission.query.filter_by(team_id=record.team_id).all()
+
+    any_pending = False
+    for r in team_records:
+        if r.hod_status == "Pending":
+            any_pending = True
+            break
+
+    if not any_pending:
+        for r in team_records:
+            if r.hod_status == "Approved":
+                r.stage = "CEER_FINAL"
+
+        db.session.commit()
+
     return redirect('/hod_approvals')
 # ---------------- HOD STATUS ----------------
 @app.route('/hod_status')
@@ -929,11 +979,15 @@ def director_approvals():
 @app.route('/director_approve/<team_id>')
 def director_approve(team_id):
 
-    records = Permission.query.filter_by(team_id=team_id).all()
+    # ✅ take only HOD approved students
+    records = Permission.query.filter_by(
+        team_id=team_id,
+        hod_status="Approved"
+    ).all()
 
     for r in records:
         r.director_status = "Approved"
-        r.stage = "FACULTY"
+        r.stage = "FACULTY"   # move forward
 
     db.session.commit()
 
@@ -941,7 +995,10 @@ def director_approve(team_id):
 #--------------------------DIRECTOR REJECT-----------------
 @app.route('/director_reject/<team_id>')
 def director_reject(team_id):
-    records = Permission.query.filter_by(team_id=team_id).all()
+    records = Permission.query.filter_by(
+        team_id=team_id,
+        hod_status="Approved"
+    ).all()
     for r in records:
         r.director_status = "Rejected"
         r.stage = "REJECTED"
@@ -1149,6 +1206,26 @@ def reset_all_users():
     CEER.query.delete()
     db.session.commit()
     return "All logins deleted"
+@app.route('/add_faculty')
+def add_faculty():
+
+    for i in range(1, 6):
+        email = f"faculty{i}@cmrcet.ac.in"
+
+        exists = Faculty.query.filter_by(email=email).first()
+
+        if not exists:
+            db.session.add(Faculty(
+                email=email,
+                password="cmr123",
+                first_login=True
+            ))
+
+    db.session.commit()
+
+    return "Faculty added successfully"
+
+#--------------------MAIN------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
@@ -1156,4 +1233,4 @@ if __name__ == "__main__":
         seed_ceer()
         seed_director()
         seed_faculty()
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=10000)

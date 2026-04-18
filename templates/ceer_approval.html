@@ -22,8 +22,6 @@ background:rgba(0,0,0,0.85);
 z-index:-1;
 }
 
-/* BACK BUTTON */
-
 .back-btn{
 position:fixed;
 top:25px;
@@ -37,14 +35,10 @@ font-weight:bold;
 cursor:pointer;
 }
 
-/* CONTAINER */
-
 .container{
 width:95%;
 margin:100px auto;
 }
-
-/* SECTIONS */
 
 .section{
 background:rgba(255,255,255,0.08);
@@ -58,16 +52,12 @@ h2{
 margin-bottom:20px;
 }
 
-/* CARD */
-
 .card{
 background:rgba(255,255,255,0.05);
 padding:20px;
 margin-bottom:25px;
 border-radius:10px;
 }
-
-/* TABLE */
 
 .member-table{
 width:100%;
@@ -85,8 +75,6 @@ padding:8px;
 border-bottom:1px solid rgba(255,255,255,0.2);
 text-align:center;
 }
-
-/* BUTTONS */
 
 .btn{
 padding:8px 18px;
@@ -130,8 +118,7 @@ font-weight:bold;
 
 <div class="container">
 
-
-<!-- ================= INITIAL CEER REVIEW ================= -->
+<!-- INITIAL CEER -->
 
 <div class="section">
 
@@ -191,9 +178,7 @@ font-weight:bold;
 
 </div>
 
-
-
-<!-- ================= FINAL CEER REVIEW ================= -->
+<!-- FINAL CEER -->
 
 <div class="section">
 
@@ -224,6 +209,7 @@ font-weight:bold;
 <th>Year</th>
 <th>Section</th>
 <th>HOD Status</th>
+<th>Attendance</th> <!-- ✅ ADDED -->
 </tr>
 
 {% for m in team %}
@@ -237,13 +223,15 @@ font-weight:bold;
 <td>{{ m.section }}</td>
 
 <td>
-
 {% if m.hod_status == "Approved" %}
 <span class="approved">Approved</span>
 {% else %}
 <span class="pending">{{ m.hod_status }}</span>
 {% endif %}
+</td>
 
+<td>
+{{ m.attendance if m.attendance else "-" }}%
 </td>
 
 </tr>
