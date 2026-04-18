@@ -29,12 +29,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads'
 db = SQLAlchemy(app)
-with app.app_context():
-    db.create_all()
-    seed_hods()
-    seed_ceer()
-    seed_director()
-    seed_faculty()
 # ---------------- MODELS ----------------
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
